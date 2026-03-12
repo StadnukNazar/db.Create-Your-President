@@ -6,9 +6,7 @@ const { Pool } = pg;
 const pool = new Pool({
    connectionString: `${process.env.DB_URL}`,
 });
-
-const initializeDatabase = async () => {
-   console.log('Initializing mlbb database...');
+async function initializeDatabase() {
 
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS president (
@@ -31,7 +29,7 @@ const initializeDatabase = async () => {
    }
 };
 
-async function addPresident (name, country,steepness, Rule_start,appearance ) {
+async function addPresident (name, country, steepness, Rule_start, appearance) {
 
    const appearancePresident = ['young', 'old', 'Normal'];
    if (!appearancePresident.includes(appearance.toLowerCase())) {
@@ -47,13 +45,13 @@ async function addPresident (name, country,steepness, Rule_start,appearance ) {
 
    const query = `
         INSERT INTO President(
-           name , country, steepness ,Rule_start, appearance
+           name, country, steepness ,Rule_start, appearance
             
         ) 
         VALUES ($1, $2, $3, $4, $5) 
         RETURNING *`;
 
-   const values = [name, country,steepness, Rule_start,appearance ];
+   const values = [name, country, steepness, Rule_start, appearance ];
 
    try {
       const res = await pool.query(query, values);
@@ -100,7 +98,7 @@ async function deletePresident(id) {
          case "add": {
             if (process.argv.length < 7) {
                console.log("Usage: node database.js add <name> <country> <steepness> <Rule_start> <appearance> ");
-               console.log("Example: node database.js add Joe  USA cool 1980-2040 Old");
+               console.log("Example: node database.js add Joe USA cool 1970-03-01 Old");
                break; 
             }
              await addPresident(
@@ -113,7 +111,7 @@ async function deletePresident(id) {
             break;
          }
          case "delete": {
-            if (process.argv.length < 8) {
+            if (process.argv.length < 4) {
                console.log("Usage: node database.js delete <id>");
                break;
             }
